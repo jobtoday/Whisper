@@ -38,13 +38,15 @@ public struct Murmur {
   public var backgroundColor: UIColor
   public var titleColor: UIColor
   public var font: UIFont
+  public var lines: Int
   public var action: (() -> Void)?
 
-  public init(title: String, backgroundColor: UIColor = ColorList.Whistle.background, titleColor: UIColor = ColorList.Whistle.title, font: UIFont = FontList.Whistle.title, action: (() -> Void)? = nil) {
+  public init(title: String, backgroundColor: UIColor = ColorList.Whistle.background, titleColor: UIColor = ColorList.Whistle.title, font: UIFont = FontList.Whistle.title, lines: Int = 1, action: (() -> Void)? = nil) {
     self.title = title
     self.backgroundColor = backgroundColor
     self.titleColor = titleColor
     self.font = font
     self.action = action
+    self.lines = lines
   }
 }

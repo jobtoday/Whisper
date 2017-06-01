@@ -19,11 +19,11 @@ open class WhistleFactory: UIViewController {
 
     return label
   }()
-    
+
   open fileprivate(set) lazy var tapGestureRecognizer: UITapGestureRecognizer = { [unowned self] in
       let gesture = UITapGestureRecognizer()
       gesture.addTarget(self, action: #selector(WhistleFactory.handleTapGestureRecognizer))
-        
+
       return gesture
   }()
 
@@ -41,7 +41,7 @@ open class WhistleFactory: UIViewController {
     setupWindow()
     view.clipsToBounds = true
     view.addSubview(titleLabel)
-    
+
     view.addGestureRecognizer(tapGestureRecognizer)
 
     NotificationCenter.default.addObserver(self, selector: #selector(WhistleFactory.orientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
@@ -62,6 +62,7 @@ open class WhistleFactory: UIViewController {
     titleLabel.text = murmur.title
     titleLabel.font = murmur.font
     titleLabel.textColor = murmur.titleColor
+    titleLabel.numberOfLines = murmur.lines
     view.backgroundColor = murmur.backgroundColor
     whistleWindow.backgroundColor = murmur.backgroundColor
 
@@ -98,7 +99,7 @@ open class WhistleFactory: UIViewController {
     let labelWidth = UIScreen.main.bounds.width
     let defaultHeight = titleLabelHeight
 
-    if let text = titleLabel.text {
+    if let text = titleLabel.text, titleLabel.numberOfLines == 0 {
       let neededDimensions =
         NSString(string: text).boundingRect(
           with: CGSize(width: labelWidth, height: CGFloat.infinity),
@@ -107,7 +108,6 @@ open class WhistleFactory: UIViewController {
           context: nil
         )
       titleLabelHeight = CGFloat(neededDimensions.size.height)
-      titleLabel.numberOfLines = 0 // Allows unwrapping
 
       if titleLabelHeight < defaultHeight {
         titleLabelHeight = defaultHeight
@@ -175,9 +175,9 @@ open class WhistleFactory: UIViewController {
       hide()
     }
   }
-    
+
   // MARK: - Gesture methods
-    
+
   @objc fileprivate func handleTapGestureRecognizer() {
       guard let murmur = murmur else { return }
       murmur.action?()
