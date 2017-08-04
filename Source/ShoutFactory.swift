@@ -8,8 +8,9 @@ open class ShoutView: UIView {
     public static let indicatorHeight: CGFloat = 6
     public static let indicatorWidth: CGFloat = 50
     public static let imageSize: CGFloat = 48
-    public static let imageOffset: CGFloat = 18
-    public static var textOffset: CGFloat = 75
+    public static let imageOffset: CGFloat = 8
+    public static var textOffsetLeft: CGFloat = 69
+    public static var textOffsetRight: CGFloat = 15
     public static var touchOffset: CGFloat = 40
   }
 
@@ -33,7 +34,7 @@ open class ShoutView: UIView {
 
   open fileprivate(set) lazy var imageView: UIImageView = {
     let imageView = UIImageView()
-    imageView.layer.cornerRadius = Dimensions.imageSize / 2
+    imageView.layer.cornerRadius = 9
     imageView.clipsToBounds = true
     imageView.contentMode = .scaleAspectFill
 
@@ -44,7 +45,7 @@ open class ShoutView: UIView {
     let label = UILabel()
     label.font = FontList.Shout.title
     label.textColor = ColorList.Shout.title
-    label.numberOfLines = 2
+    label.numberOfLines = 1
 
     return label
     }()
@@ -53,7 +54,7 @@ open class ShoutView: UIView {
     let label = UILabel()
     label.font = FontList.Shout.subtitle
     label.textColor = ColorList.Shout.subtitle
-    label.numberOfLines = 2
+    label.numberOfLines = 1
 
     return label
     }()
@@ -87,11 +88,10 @@ open class ShoutView: UIView {
     super.init(frame: frame)
 
     addSubview(backgroundView)
-    [imageView, titleLabel, subtitleLabel, indicatorView].forEach {
-      $0.autoresizingMask = []
-      backgroundView.addSubview($0)
-    }
-
+    backgroundView.addSubview(imageView)
+    backgroundView.addSubview(titleLabel)
+    backgroundView.addSubview(subtitleLabel)
+    
     clipsToBounds = false
     isUserInteractionEnabled = true
     layer.shadowColor = UIColor.black.cgColor
@@ -100,7 +100,6 @@ open class ShoutView: UIView {
     layer.shadowRadius = 0.5
 
     backgroundView.addGestureRecognizer(tapGestureRecognizer)
-    addGestureRecognizer(panGestureRecognizer)
 
     NotificationCenter.default.addObserver(self, selector: #selector(ShoutView.orientationDidChange), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
   }
@@ -149,24 +148,22 @@ open class ShoutView: UIView {
   // MARK: - Setup
 
   public func setupFrames() {
-    internalHeight = (UIApplication.shared.isStatusBarHidden ? 55 : 65)
+    internalHeight = 82
 
     let totalWidth = UIScreen.main.bounds.width
-    let offset: CGFloat = UIApplication.shared.isStatusBarHidden ? 2.5 : 5
-    let textOffsetX: CGFloat = imageView.image != nil ? Dimensions.textOffset : 18
+    let offset: CGFloat = UIApplication.shared.isStatusBarHidden ? 2.5 : 8
+    let textOffsetX: CGFloat = imageView.image != nil ? Dimensions.textOffsetLeft : 18
     let imageSize: CGFloat = imageView.image != nil ? Dimensions.imageSize : 0
 
     [titleLabel, subtitleLabel].forEach {
-        $0.frame.size.width = totalWidth - imageSize - (Dimensions.imageOffset * 2)
         $0.sizeToFit()
+        $0.frame.size.width = totalWidth - Dimensions.textOffsetLeft - Dimensions.textOffsetRight
     }
-
-    internalHeight += subtitleLabel.frame.height
 
     imageView.frame = CGRect(x: Dimensions.imageOffset, y: (internalHeight - imageSize) / 2 + offset,
       width: imageSize, height: imageSize)
 
-    let textOffsetY = imageView.image != nil ? imageView.frame.origin.x + 3 : textOffsetX + 5
+    let textOffsetY: CGFloat = 30
 
     titleLabel.frame.origin = CGPoint(x: textOffsetX, y: textOffsetY)
     subtitleLabel.frame.origin = CGPoint(x: textOffsetX, y: titleLabel.frame.maxY + 2.5)
@@ -227,7 +224,7 @@ open class ShoutView: UIView {
 
     if panGestureRecognizer.state == .began {
       subtitleLabelOriginalHeight = subtitleLabel.bounds.size.height
-      subtitleLabel.numberOfLines = 0
+      subtitleLabel.numberOfLines = 1
       subtitleLabel.sizeToFit()
     } else if panGestureRecognizer.state == .changed {
       panGestureActive = true
