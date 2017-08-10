@@ -126,7 +126,7 @@ open class ShoutView: UIView {
   open func configureView(_ announcement: Announcement) {
     self.announcement = announcement
     imageView.image = announcement.image
-    titleLabel.text = announcement.title
+    titleLabel.attributedText = announcement.attributedTitle
     subtitleLabel.text = announcement.subtitle
 
     displayTimer.invalidate()

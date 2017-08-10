@@ -17,14 +17,14 @@ public struct Message {
 
 public struct Announcement {
 
-  public var title: String
+  public var attributedTitle: NSAttributedString
   public var subtitle: String?
   public var image: UIImage?
   public var duration: TimeInterval
   public var action: (() -> Void)?
 
-  public init(title: String, subtitle: String? = nil, image: UIImage? = nil, duration: TimeInterval = 2, action: (() -> Void)? = nil) {
-    self.title = title
+  public init(title: NSAttributedString, subtitle: String? = nil, image: UIImage? = nil, duration: TimeInterval = 2, action: (() -> Void)? = nil) {
+    self.attributedTitle = title
     self.subtitle = subtitle
     self.image = image
     self.duration = duration
